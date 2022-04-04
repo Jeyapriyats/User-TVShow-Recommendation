@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Box from '@material-ui/core/Box';
 import Typography  from '@material-ui/core/Typography';
 import axios from 'axios';
-var result;
+
 class Dashboard extends Component{
     constructor(){
         super()
@@ -19,23 +19,33 @@ getAPI() {
     axios.get(" https://api.tvmaze.com/shows")
     .then((res) =>{ console.log(res.data)
         var data = res.data[Math.floor(Math.random() * res.data.length)];
+        console.log("Datta:",data.id)
     this.setState({
         id:data.id,
         url:data.image.medium,
-        name:data.name
+        name:data.name,
+        shows:[]
+    });
+
+    const display = res.data.map(item => {
+        this.setState({
+            shows: this.state.shows.concat(item.id)
+        })
+        
     })
-});
-    axios.post("http://localhost:5000/user/updateShow",{name:this.props.name, id:this.state.id})
-          .then((res) => {console.log("success",res.data.shows)
-          result = res.data.shows.find((element) => element === this.state.id)
-          console.log(result);
-      }); 
+   
+
+    axios.post("http://localhost:5000/user/updateShow",{id:128,userId:JSON.parse(localStorage.getItem('this.props.userId'))})
+          .then((res) => {console.log("Shows",res.data.shows)
+      });
+      axios.post(" http://localhost:5000/user/filter",{id:128,container:this.state.shows})
+      .then((res)=>{console.log("List of Unrecommended Shows:!!",res.data)
+  })
+}); 
+     
 }
     render(props) {
-        if (result) {
-            console.log("Inside Render")
-            this.getAPI();
-        }
+
     return(
         <div>
             <Typography>

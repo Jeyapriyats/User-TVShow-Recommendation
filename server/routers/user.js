@@ -1,8 +1,10 @@
 import Express  from "express";
 console.log("Inside Router");
-import { createUser, readUser,updateShow } from "../controllers/user.js";
+import { updateShow, register,login,deleteshows,filterShow } from "../controllers/user.js";
 const router = Express.Router();
-router.get('/',readUser);
-router.post('/',createUser);
+router.post('/register',register);
+router.post('/login',login);
 router.post('/updateShow',updateShow);
+router.post('/deleteshows',deleteshows);
+router.post('/filter',filterShow)
 export default router;

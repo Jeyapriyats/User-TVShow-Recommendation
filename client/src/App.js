@@ -11,19 +11,21 @@ class App extends Component {
       this.state = {
         name : "",
         password:"",
-        submitted : false
+        submitted : false,
+        userId:0
       }
   }
   show()
   {
-    console.log("Inside Show");
-    axios.post("http://localhost:5000/user",{name:this.state.name,password:this.state.password})
-    .then((res) =>{ 
-  });   
-   this.setState({
-     submitted : true
-    
-   })
+    axios.post("http://localhost:5000/user/login",{name:this.state.name,password:this.state.password})
+    .then((res) =>{
+     const userId = localStorage.setItem('userId',JSON.stringify(res.data))
+     console.log("UserId:",userId)
+      this.setState({
+        userId:userId,
+        submitted:true
+      })
+      });   
   }
   changenameHandler=(e)=>{
     this.setState({
@@ -35,9 +37,13 @@ class App extends Component {
       password : e.target.value
     })
   }
+  reset()
+   {
+    axios.post("http://localhost:5000/user/deleteshows",{userId:JSON.parse(localStorage.getItem('userId'))})
+  }
   render(){
   return (
-    this.state.submitted ? <Dashboard name = {this.state.name} />:
+   this.state.submitted ? <Dashboard name = {this.state.name} userId = {this.state.userId}/>:
     <form>
         <Box
           sx={{
@@ -91,12 +97,29 @@ class App extends Component {
           }}
         >
  <Button
- type="submit"
+ type="button"
  variant="contained"
  color="primary"
  onClick={()=>this.show()}
 >
  Sign In
+</Button>
+</Box>
+<Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+ <Button
+ type="button"
+ variant="contained"
+ color="primary"
+ onClick={()=>this.reset()}
+>
+ reset
 </Button>
 </Box>
 </form>
